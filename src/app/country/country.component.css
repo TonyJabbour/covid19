@@ -1,0 +1,8 @@
+div.table > div.container{
+  border: none;
+
+}
+div.table> div.container > div.row > div.col {
+  border: solid;
+  border-color: black !important;
+}

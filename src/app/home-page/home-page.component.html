@@ -1,0 +1,136 @@
+<section class="jumbotron text-center">
+    <h1 class="jumbotron-heading">COVID-19</h1>
+    <p class="lead text-muted">Live Updates and Statistics</p>
+  <app-news-display></app-news-display>
+</section>
+
+<div class="offset-lg-3 col-lg-6">
+  <div class="card bg-light">
+    <div class="card-body">
+      <h2><b>Coronna Virus Summary Worldwide</b></h2>
+    </div>
+  </div>
+  <br/>
+
+
+  <div class="table table-dark table-bordered text-center" >
+    <div class="row">
+      <div class="col" >
+        <label>Metric</label>
+      </div>
+      <div class="col">
+        <label>Value</label>
+      </div>
+    </div>
+    <div class="container" *ngFor="let item1 of summaryObjectMap | keyvalue">
+      <div class="row" [ngClass]="{
+    'bg-primary':item1.key < 3,
+    'bg-success':item1.key > 2 &&  item1.key < 6,
+    'bg-danger':item1.key >  5}"
+     *ngFor="let item2 of item1.value | keyvalue">
+        <div class="col" >
+          <label for="{{item2.key}}">{{item2.key}}</label>
+        </div>
+        <div class="col">
+          <label id="{{item2.key}}">{{item2.value}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br/>
+  <div class="card bg-light">
+    <div class="card-body">
+      <h2><b>Coronna Virus Cases Distribution Worldwide</b></h2>
+  </div>
+  </div>
+    <br/>
+
+    <div class="chart">
+  <canvas id = 'pieChart' baseChart
+         [data]="pieChartData"
+         [labels]="pieChartLabels"
+         [chartType]="pieChartType"
+         [colors]="pieChartColors"
+         [legend]="pieChartLegend"></canvas>
+</div>
+
+  <br/>
+  <div class="card bg-light">
+    <div class="card-body">
+      <h2><b>Daily Coronna Virus Cases Worldwide</b></h2>
+</div>
+  </div>
+  <br/>
+
+  <div class="chart">
+<canvas id = 'barChart'  baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+       [legend]="barChartLegend" [chartType]="barChartType" (chartHover)="chartHovered($event)"></canvas>
+</div>
+
+
+  <br/>
+  <div class="card bg-light">
+    <div class="card-body">
+      <h2><b>Total Coronna Virus Cases WorldWide</b></h2>
+    </div>
+  </div>
+  <br/>
+
+  <div class="chart">
+  <canvas id = 'lineChart'  baseChart width="400" height="400"
+          [datasets]="lineChartData"
+          [labels]="lineChartLabels"
+          [options]="lineChartOptions"
+          [legend]="lineChartLegend"
+          [chartType]="lineChartType"
+          (chartHover)="chartHovered($event)"></canvas>
+  </div>
+
+  <br/>
+  <div class="card bg-light">
+    <div class="card-body">
+      <h2><b>Coronna Virus Cases By Country</b></h2>
+    </div>
+  </div>
+   <br/>
+
+  <div class="table table-dark table-bordered text-center dataTable no-footer">
+    <div class="container">
+    <div class="row">
+      <div class="col" [ngClass]="{
+    'bg-primary': item.key > 0 && item.key < 3,
+    'bg-success':item.key > 2 &&  item.key < 5,
+    'bg-danger':item.key >  4}"
+           *ngFor="let item of summaryTitlesMap | keyvalue">
+            <a (click)="this.orderColumnByAscending(item.value)"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+            <a (click)="this.orderColumnByDescending(item.value)"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+            <label>{{item.value}}</label>
+      </div>
+    </div>
+      <div class="row" *ngFor="let item of summaryObject.countries">
+            <div class="col">
+              <label><a routerLink="/country/{{item.Country}}">{{item.Country}}</a></label>
+            </div>
+            <div class="col bg-primary">
+              <label>{{item.NewCases}}</label>
+            </div>
+            <div class="col bg-primary">
+              <label>{{item.TotalCases}}</label>
+            </div>
+            <div class="col bg-success">
+              <label>{{item.NewRecovered}}</label>
+            </div>
+            <div class="col bg-success">
+              <label>{{item.TotalRecovered}}</label>
+            </div>
+            <div class="col bg-danger">
+              <label>{{item.NewDeaths}}</label>
+            </div>
+            <div class="col bg-danger">
+              <label>{{item.TotalDeaths}}</label>
+            </div>
+      </div>
+  </div>
+  </div>
+</div>

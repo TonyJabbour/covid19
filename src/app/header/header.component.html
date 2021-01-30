@@ -1,0 +1,32 @@
+<!-- Toolbar -->
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded toolbar">
+  <div class="col-lg-4">
+    <label><a class="btn btn-info"  routerLink="/home">HOME</a></label>
+  </div>
+  <div class="offset-lg-4 col-lg-4">
+    <div class="row">
+      <div class="col-lg-4">
+        <!-- Button trigger modal -->
+        <div class="row btn-group" role="group">
+          <button id="signIn" class="btn btn-info" (click)="signInOut()" >Sign In</button>
+          <button id="addNews" class="btn btn-info" style="display: none"  (click)="addNews()">Add News</button>
+        </div>
+      </div>
+      <div id="user" class="col-lg-4" style="display: none;">
+        <label>Welcome {{this.loginService.googleUser?.getValue()?.displayName}}</label>
+      </div>
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+<div class="content container-lg" role="main">
+  <app-news id="news" style="display: none"></app-news>
+  <app-login id="login" [googleUser] = this.loginService.googleUser?.getValue()  style="display: none"></app-login>
+</div>
+
+
+
