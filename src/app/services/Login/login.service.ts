@@ -1,12 +1,10 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import firebase from 'firebase';
-import {Roles, User} from '../../shared/GoogleUser';
+import { User} from '../../shared/GoogleUser';
 import {AngularFireAuth, AngularFireAuthModule} from '@angular/fire/auth';
 import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
-import {environment} from '../../../environments/environment';
 import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
-import {map, switchMap} from 'rxjs/operators';
 
 declare var $: any;
 
@@ -16,14 +14,14 @@ declare var $: any;
 
 export class LoginService implements  OnDestroy{
 
-  user$?: Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>>;
+  user$?: BehaviorSubject<any>;
   public updatedFirebaseUser?: BehaviorSubject<User>;
   /** User object snapshot */
   private sub?: Subscription;
   public googleUser?: BehaviorSubject<firebase.User>;
 
-  public subscribeObservable(): Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>>{
-    return this.afs.firestore.doc(`users/${this.googleUser?.getValue().uid}`).get();
+  public subscribeObservable(user: firebase.User): Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>>{
+    return this.afs.firestore.doc(`users/${user.uid}`).get();
 
 
   }
@@ -34,28 +32,65 @@ export class LoginService implements  OnDestroy{
     const userStr = localStorage.getItem('user');
 
 
-    if (userStr !== null && this.googleUser !== null && this.googleUser !== undefined)
+
+    if (userStr !== null)
     {
-      this.googleUser = JSON.parse(userStr);
+
+      if (this.googleUser === null || this.googleUser === undefined) {
+        this.googleUser = new BehaviorSubject<firebase.User>(JSON.parse(userStr));
+
+      }
+
+      else{
+        this.googleUser.next(JSON.parse(userStr));
+      }
       //// Get auth data, then get firestore user document || null
       // Keeps a snapshot of the current user object
       this.sub = this.fire.user.subscribe( (user) => {
-        this.user$ = this.subscribeObservable();
+        if (user != null)
+        {
+          this.subscribeObservable(user).then(userCredentials  => {
+
+            const firestoreUser = userCredentials.data();
+
+            if (user != null)
+            {
+              this.user$ = new BehaviorSubject<any>(firestoreUser);
+            }
+
+            else {
+              this.user$?.next(firestoreUser);
+            }
+          });
+        }
       });
       }
 
     else {
       // Keeps a snapshot of the current user object
       this.sub = this.fire.user.subscribe( (user) => {
-        if (this.googleUser == null && user !== null)
+        if (user != null)
         {
-          this.googleUser = new BehaviorSubject<firebase.User>(user);
-        }
-        else if (this.googleUser !== null && user !== null) {
-          this.googleUser?.next(user) ;
+          if (this.googleUser == null && user !== null)
+          {
+            this.googleUser = new BehaviorSubject<firebase.User>(user);
+          }
+          else if (this.googleUser !== null && user !== null) {
+            this.googleUser?.next(user) ;
+          }
+          this.subscribeObservable(user).then(userCredentials => {
+            const updatedUser = userCredentials?.data();
+
+            if (this.user$ == null && updatedUser !== null)
+            {
+              this.user$ = new BehaviorSubject<any>(updatedUser);
+            }
+            else if (this.user$ !== null && updatedUser !== null) {
+              this.user$?.next(updatedUser) ;
+            }
+          });
         }
 
-        this.user$ = this.subscribeObservable();
 
       });
       }

@@ -35,6 +35,14 @@ export class LoginComponent implements OnInit {
   public googleSignIn(): void
   {
 
+    const user = this.loginService.user$?.getValue();
+    // tslint:disable-next-line:max-line-length
+    if (user !== null && user !== undefined && this.loginService.canEdit(user)) {
+      $('#addNews')[0].style.display = 'block';
+    } else {
+      $('#addNews')[0].style.display = 'none';
+    }
+
     // tslint:disable-next-line:max-line-length
     if (this.loginService.googleUser !== null && this.googleUser?.displayName !== undefined)
     {
@@ -49,20 +57,12 @@ export class LoginComponent implements OnInit {
     else{
 
       // As httpOnly cookies are to be used, do not persist any state client side.
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
         this.loginService.googleSignIn().then((result) => {
 
-          // tslint:disable-next-line:max-line-length
-          if (result?.user !== undefined) {
-            $('#addNews')[0].style.display = 'block';
-          } else {
-            $('#addNews')[0].style.display = 'none';
-          }
 
 
           this.loginService.updateUserData(result.user).then(() => {
-
-            $('#signIn').html('Sign Out');
 
             $('#user')[0].style.display = 'block';
 
@@ -99,6 +99,7 @@ export class LoginComponent implements OnInit {
   }
 
 ngOnInit(): void {
+
 }
 
 }

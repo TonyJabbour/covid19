@@ -20,7 +20,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginService.googleUser?.asObservable().subscribe(data => this.googleUser);
-    this.loginService.user$?.then(u => this.user = u.data() as User);
   }
 
   addNews(): void{
