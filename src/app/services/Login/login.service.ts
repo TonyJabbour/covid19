@@ -16,7 +16,6 @@ declare var $: any;
 
 export class LoginService implements  OnDestroy{
 
-
   user$?: Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>>;
   public updatedFirebaseUser?: BehaviorSubject<User>;
   /** User object snapshot */

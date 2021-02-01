@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { faArrowUp,  faArrowDown} from '@fortawesome/free-solid-svg-icons';
 import { Sort } from '../utilities/Sort';
 import {
@@ -14,6 +14,7 @@ import {ChartColor, ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ObjectMap} from '../utilities/ObjectMap';
 import {Charts} from '../utilities/Charts';
+import {Subject} from 'rxjs';
 
 
 
@@ -33,6 +34,11 @@ const date = new Date(2020, 4, 13);
 })
 
 export class HomePageComponent implements OnInit {
+  dtOptions: any = {}; // declare the dtOption
+  // We use this trigger because fetching the list of persons can be quite long,
+  // thus we ensure the data is fetched before rendering
+  dtTrigger: Subject<any> = new Subject<any>();
+  dataTable: any;
 
   constructor(private covid19: Covid19Service) {
 
@@ -156,6 +162,7 @@ export class HomePageComponent implements OnInit {
       this.getSummaryInfo();
       this.getSummaryInfoFromToDate(previousWeek, today);
       this.getSummaryInfoFromDateWoldWide(date);
+
   }
 
 
@@ -213,6 +220,28 @@ export class HomePageComponent implements OnInit {
 
   setSummaryByCountriesInfo(countries: any[]): void {
     this.map.mapDataObjectModel(this.summaryObject, countries);
+
+    const objectCountries = this.summaryObject.countries;
+
+    this.dtOptions = {
+      data: this.summaryObject.countries,
+      columns: [
+        {title: 'Country', data: 'Country'},
+        {title: 'Total Cases', data: 'TotalCases'},
+        {title: 'New Recovered', data: 'NewRecovered'},
+        {title: 'Total Recovered', data: 'TotalRecovered'},
+        {title: 'New Deaths', data: 'NewDeaths'},
+        {title: 'Total Deaths', data: 'TotalDeaths'}
+
+      ],
+      paging  : false,
+      ordering: false,
+      info    : false
+    };
+
+    this.dataTable = $('datatable');
+    this.dataTable.DataTable(this.dtOptions);
+    this.dtTrigger.next();
   }
 
 
@@ -220,6 +249,8 @@ export class HomePageComponent implements OnInit {
     this.covid19.getSummaryInfo().subscribe(data => {
       const global = data.Global;
       const countries = data.Countries;
+
+
 
       this.setSummaryObject(global);
       this.setSummaryByCountriesInfo(countries);

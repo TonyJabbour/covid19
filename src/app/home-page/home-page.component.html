@@ -95,42 +95,71 @@
   </div>
    <br/>
 
-  <div class="table table-dark table-bordered text-center dataTable no-footer">
-    <div class="container">
-    <div class="row">
-      <div class="col" [ngClass]="{
-    'bg-primary': item.key > 0 && item.key < 3,
-    'bg-success':item.key > 2 &&  item.key < 5,
-    'bg-danger':item.key >  4}"
-           *ngFor="let item of summaryTitlesMap | keyvalue">
-            <a (click)="this.orderColumnByAscending(item.value)"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
-            <a (click)="this.orderColumnByDescending(item.value)"><fa-icon [icon]="faArrowDown"></fa-icon></a>
-            <label>{{item.value}}</label>
-      </div>
-    </div>
-      <div class="row" *ngFor="let item of summaryObject.countries">
-            <div class="col">
-              <label><a routerLink="/country/{{item.Country}}">{{item.Country}}</a></label>
-            </div>
-            <div class="col bg-primary">
-              <label>{{item.NewCases}}</label>
-            </div>
-            <div class="col bg-primary">
-              <label>{{item.TotalCases}}</label>
-            </div>
-            <div class="col bg-success">
-              <label>{{item.NewRecovered}}</label>
-            </div>
-            <div class="col bg-success">
-              <label>{{item.TotalRecovered}}</label>
-            </div>
-            <div class="col bg-danger">
-              <label>{{item.NewDeaths}}</label>
-            </div>
-            <div class="col bg-danger">
-              <label>{{item.TotalDeaths}}</label>
-            </div>
-      </div>
-  </div>
-  </div>
+  <table id="#datatable" class="row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+    <thead>
+    <tr>
+      <th>
+            <a (click)="this.orderColumnByAscending('Country')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+            <a (click)="this.orderColumnByDescending('Country')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+            <label>Country</label>
+      </th>
+      <th>
+        <a (click)="this.orderColumnByAscending('New Cases')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+        <a (click)="this.orderColumnByDescending('New Cases')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+        <label>New Cases</label>
+      </th>
+      <th>
+        <a (click)="this.orderColumnByAscending('Total Cases')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+        <a (click)="this.orderColumnByDescending('Total Cases')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+        <label>Total Cases</label>
+      </th>
+      <th>
+        <a (click)="this.orderColumnByAscending('New Recovered')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+        <a (click)="this.orderColumnByDescending('New Recovered')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+        <label>New Recovered</label>
+      </th>
+      <th>
+        <a (click)="this.orderColumnByAscending('Total Recovered')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+        <a (click)="this.orderColumnByDescending('Total Recovered')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+        <label>Total Recovered</label>
+      </th>
+      <th>
+        <a (click)="this.orderColumnByAscending('New Deaths')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+        <a (click)="this.orderColumnByDescending('New Deaths')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+        <label>New Deaths</label>
+      </th>
+      <th>
+        <a (click)="this.orderColumnByAscending('Total Deaths')"><fa-icon [icon]="faArrowUp" ></fa-icon></a>
+        <a (click)="this.orderColumnByDescending('Total Deaths')"><fa-icon [icon]="faArrowDown"></fa-icon></a>
+        <label>Total Deaths</label>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr  *ngFor="let item of summaryObject.countries">
+      <td>
+        <label><a routerLink="/country/{{item.Country}}">{{item.Country}}</a></label>
+      </td>
+      <td>
+        <label>{{item.NewCases}}</label>
+      </td>
+      <td>
+        <label>{{item.TotalCases}}</label>
+      </td>
+      <td>
+        <label>{{item.NewRecovered}}</label>
+      </td>
+      <td>
+        <label>{{item.TotalRecovered}}</label>
+      </td>
+      <td>
+        <label>{{item.NewDeaths}}</label>
+      </td>
+      <td>
+        <label>{{item.TotalDeaths}}</label>
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
 </div>
